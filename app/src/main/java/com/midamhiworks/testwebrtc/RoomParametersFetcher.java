@@ -53,8 +53,8 @@ public class RoomParametersFetcher {
    */
   public interface RoomParametersFetcherEvents {
     /**
-     * Callback fired once the room's signaling parameters
-     * SignalingParameters are extracted.
+     * Callback fired once the room's signaling parameters SignalingParameters are extracted.
+     * 룸의 신호 매개 변수가 추출되면 콜백이 실행됩니다.
      */
     void onSignalingParametersReady(final SignalingParameters params);
 
@@ -166,8 +166,8 @@ public class RoomParametersFetcher {
     }
   }
 
-  // Requests & returns a TURN ICE Server based on a request URL.  Must be run
-  // off the main thread!
+  // Requests & returns a TURN ICE Server based on a request URL.  Must be run off the main thread!
+  // 요청 URL 을 기준으로 TURN ICE 서버를 반환합니다. 주 스레드에서 실행되어야 합니다!
   private List<PeerConnection.IceServer> requestTurnServers(String url)
       throws IOException, JSONException {
     List<PeerConnection.IceServer> turnServers = new ArrayList<>();
@@ -206,8 +206,8 @@ public class RoomParametersFetcher {
     return turnServers;
   }
 
-  // Return the list of ICE servers described by a WebRTCPeerConnection
-  // configuration string.
+  // Return the list of ICE servers described by a WebRTCPeerConnection configuration string.
+  // WebRTCPeerConnection 구성 문자열에 설명된 ICE 서버 목록을 반환합니다.
   private List<PeerConnection.IceServer> iceServersFromPCConfigJSON(String pcConfig)
       throws JSONException {
     JSONObject json = new JSONObject(pcConfig);

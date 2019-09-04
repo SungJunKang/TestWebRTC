@@ -48,12 +48,13 @@ AppRTCProximitySensor (선택)
 
 - 기본적인 장치로 영상통화 하는 데 없어도 무방하지만 지우려면 코드를 여러번 수정해야 함. 안지우는걸 추천
  */
-public class AppRTCProximitySensor implements SensorEventListener {
+public class  AppRTCProximitySensor implements SensorEventListener {
   private static final String TAG = "AppRTCProximitySensor";
 
-  // This class should be created, started and stopped on one thread
-  // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
-  // the case. Only active when |DEBUG| is set to true.
+  // This class should be created, started and stopped on one thread (e.g. the main thread). We use |nonThreadSafe| to ensure that this is the case.
+  // Only active when |DEBUG| is set to true.
+  // 이 클래스는 하나의 스레드(예: 메인 스레드)에서 생성, 시작 및 중지해야 합니다. 우리는 이것이 사실인지 확인하기 위해 |nonThreadSafe|를 사용합니다.
+  // |DEBUG|이 true 로 설정된 경우에만 활성화됩니다.
   private final ThreadUtils.ThreadChecker threadChecker = new ThreadUtils.ThreadChecker();
 
   private final Runnable onSensorStateListener;
@@ -74,14 +75,15 @@ public class AppRTCProximitySensor implements SensorEventListener {
   }
 
   /**
-   * Activate the proximity sensor. Also do initialization if called for the
-   * first time.
+   * Activate the proximity sensor. Also do initialization if called for the first time.
+   * 근접 센서를 활성화합니다. 또한 처음 호출된 경우 초기화를 수행합니다.
    */
   public boolean start() {
     threadChecker.checkIsOnValidThread();
     Log.d(TAG, "start" + AppRTCUtils.getThreadInfo());
     if (!initDefaultSensor()) {
       // Proximity sensor is not supported on this device.
+      // 이 장치에서는 근접 센서가 지원되지 않습니다.
       return false;
     }
     sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -117,8 +119,8 @@ public class AppRTCProximitySensor implements SensorEventListener {
   public final void onSensorChanged(SensorEvent event) {
     threadChecker.checkIsOnValidThread();
     AppRTCUtils.assertIsTrue(event.sensor.getType() == Sensor.TYPE_PROXIMITY);
-    // As a best practice; do as little as possible within this method and
-    // avoid blocking.
+    // As a best practice; do as little as possible within this method and avoid blocking.
+    // 모범 사례로, 이 방법 내에서 가능한 한 적게 수행하고 차단을 피합니다.
     float distanceInCentimeters = event.values[0];
     if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
       Log.d(TAG, "Proximity sensor => NEAR state");
@@ -128,8 +130,8 @@ public class AppRTCProximitySensor implements SensorEventListener {
       lastStateReportIsNear = false;
     }
 
-    // Report about new state to listening client. Client can then call
-    // sensorReportsNearState() to query the current state (NEAR or FAR).
+    // Report about new state to listening client. Client can then call sensorReportsNearState() to query the current state (NEAR or FAR).
+    // 청취 클라이언트에 새 상태에 대해 보고합니다. 그런 다음 클라이언트는 sensorReportsNearState()를 호출하여 현재 상태(NEAR 또는 FAR)를 쿼리할 수 있습니다.
     if (onSensorStateListener != null) {
       onSensorStateListener.run();
     }
@@ -140,9 +142,8 @@ public class AppRTCProximitySensor implements SensorEventListener {
   }
 
   /**
-   * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7)
-   * does not support this type of sensor and false will be returned in such
-   * cases.
+   * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7) does not support this type of sensor and false will be returned in such cases.
+   * 기본 근접 센서가 있으면 가져옵니다. Tablet 장치(예: Nexus 7)는 이러한 유형의 센서를 지원하지 않으며 이 경우 False 가 반환됩니다.
    */
   private boolean initDefaultSensor() {
     if (proximitySensor != null) {
@@ -170,10 +171,12 @@ public class AppRTCProximitySensor implements SensorEventListener {
     info.append(", min delay: ").append(proximitySensor.getMinDelay());
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
       // Added in API level 20.
+      // API 레벨 20에 추가되었습니다.
       info.append(", type: ").append(proximitySensor.getStringType());
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       // Added in API level 21.
+      // API 레벨 21에 추가되었습니다.
       info.append(", max delay: ").append(proximitySensor.getMaxDelay());
       info.append(", reporting mode: ").append(proximitySensor.getReportingMode());
       info.append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());

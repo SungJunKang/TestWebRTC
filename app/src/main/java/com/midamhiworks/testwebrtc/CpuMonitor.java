@@ -238,12 +238,7 @@ class CpuMonitor {
 
     executor = Executors.newSingleThreadScheduledExecutor();
     @SuppressWarnings("unused") // Prevent downstream linter warnings.
-    Future<?> possiblyIgnoredError = executor.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        cpuUtilizationTask();
-      }
-    }, 0, CPU_STAT_SAMPLE_PERIOD_MS, TimeUnit.MILLISECONDS);
+    Future<?> possiblyIgnoredError = executor.scheduleAtFixedRate(() -> cpuUtilizationTask(), 0, CPU_STAT_SAMPLE_PERIOD_MS, TimeUnit.MILLISECONDS);
   }
 
   private void cpuUtilizationTask() {

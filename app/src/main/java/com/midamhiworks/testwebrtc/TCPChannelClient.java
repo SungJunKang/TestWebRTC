@@ -57,8 +57,8 @@ public class TCPChannelClient {
   private TCPSocket socket;
 
   /**
-   * Callback interface for messages delivered on TCP Connection. All callbacks are invoked from the
-   * looper executor thread.
+   * Callback interface for messages delivered on TCP Connection. All callbacks are invoked from the looper executor thread.
+   * TCP 연결에서 배달된 메시지에 대한 콜백 인터페이스입니다. 모든 콜백은 러퍼 실행자 스레드에서 호출됩니다.
    */
   public interface TCPChannelEvents {
     void onTCPConnected(boolean server);
@@ -68,8 +68,8 @@ public class TCPChannelClient {
   }
 
   /**
-   * Initializes the TCPChannelClient. If IP is a local IP address, starts a listening server on
-   * that IP. If not, instead connects to the IP.
+   * Initializes the TCPChannelClient. If IP is a local IP address, starts a listening server on that IP. If not, instead connects to the IP.
+   * TCPChannelClient를 초기화합니다. IP가 로컬 IP 주소인 경우 해당 IP에서 수신 서버를 시작합니다. 그렇지 않으면 IP에 연결합니다.
    *
    * @param eventListener Listener that will receive events from the client.
    * @param ip            IP address to listen on or connect to.
@@ -101,6 +101,7 @@ public class TCPChannelClient {
 
   /**
    * Disconnects the client if not already disconnected. This will fire the onTCPClose event.
+   * 아직 연결이 끊어지지 않은 경우 클라이언트의 연결을 끊습니다. OnTCPClose 이벤트가 작동합니다.
    */
   public void disconnect() {
     executorThreadCheck.checkIsOnValidThread();
@@ -121,20 +122,16 @@ public class TCPChannelClient {
 
   /**
    * Helper method for firing onTCPError events. Calls onTCPError on the executor thread.
+   * TCPError 이벤트에서 점화하기 위한 도우미 방법입니다. 실행자 스레드에서 onTCPError를 호출합니다.
    */
   private void reportError(final String message) {
     Log.e(TAG, "TCP Error: " + message);
-    executor.execute(new Runnable() {
-      @Override
-      public void run() {
-        eventListener.onTCPError(message);
-      }
-    });
+    executor.execute(() -> eventListener.onTCPError(message));
   }
 
   /**
-   * Base class for server and client sockets. Contains a listening thread that will call
-   * eventListener.onTCPMessage on new messages.
+   * Base class for server and client sockets. Contains a listening thread that will call eventListener.onTCPMessage on new messages.
+   * 서버 및 클라이언트 소켓의 기본 클래스입니다. 새 메시지에서 eventListener.onTCPMessage 를 호출할 듣기 스레드가 포함되어 있습니다.
    */
   private abstract class TCPSocket extends Thread {
     // Lock for editing out and rawSocket
@@ -146,6 +143,7 @@ public class TCPChannelClient {
 
     /**
      * Connect to the peer, potentially a slow operation.
+     * 피어에 연결하면 작업이 느려질 수 있습니다.
      *
      * @return Socket connection, null if connection failed.
      */
@@ -167,6 +165,7 @@ public class TCPChannelClient {
       Log.d(TAG, "Listening thread started...");
 
       // Receive connection to temporary variable first, so we don't block.
+      // 임시 변수에 대한 연결을 먼저 수신하여 차단하지 않습니다.
       Socket tempSocket = connect();
       BufferedReader in;
 
@@ -180,6 +179,7 @@ public class TCPChannelClient {
         rawSocket = tempSocket;
 
         // Connecting failed, error has already been reported, just exit.
+        // 연결하지 못했습니다. 오류가 이미 보고되었습니다. 그냥 종료하십시오.
         if (rawSocket == null) {
           return;
         }
@@ -196,12 +196,9 @@ public class TCPChannelClient {
       }
 
       Log.v(TAG, "Execute onTCPConnected");
-      executor.execute(new Runnable() {
-        @Override
-        public void run() {
-          Log.v(TAG, "Run onTCPConnected");
-          eventListener.onTCPConnected(isServer());
-        }
+      executor.execute(() -> {
+        Log.v(TAG, "Run onTCPConnected");
+        eventListener.onTCPConnected(isServer());
       });
 
       while (true) {
@@ -225,12 +222,9 @@ public class TCPChannelClient {
           break;
         }
 
-        executor.execute(new Runnable() {
-          @Override
-          public void run() {
-            Log.v(TAG, "Receive: " + message);
-            eventListener.onTCPMessage(message);
-          }
+        executor.execute(() -> {
+          Log.v(TAG, "Receive: " + message);
+          eventListener.onTCPMessage(message);
         });
       }
 
@@ -249,12 +243,7 @@ public class TCPChannelClient {
             rawSocket = null;
             out = null;
 
-            executor.execute(new Runnable() {
-              @Override
-              public void run() {
-                eventListener.onTCPClose();
-              }
-            });
+            executor.execute(() -> eventListener.onTCPClose());
           }
         }
       } catch (IOException e) {
@@ -297,7 +286,7 @@ public class TCPChannelClient {
     @Nullable
     @Override
     public Socket connect() {
-      Log.d(TAG, "Listening on [" + address.getHostAddress() + "]:" + Integer.toString(port));
+      Log.d(TAG, "Listening on [" + address.getHostAddress() + "]:" + port);
 
       final ServerSocket tempSocket;
       try {

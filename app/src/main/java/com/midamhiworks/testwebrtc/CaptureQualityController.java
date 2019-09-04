@@ -37,6 +37,7 @@ public class CaptureQualityController implements SeekBar.OnSeekBarChangeListener
           new CaptureFormat(640, 480, 0, 30000), new CaptureFormat(480, 360, 0, 30000),
           new CaptureFormat(320, 240, 0, 30000), new CaptureFormat(256, 144, 0, 30000));
   // Prioritize framerate below this threshold and resolution above the threshold.
+  // 이 임계값보다 낮은 프레임과 임계값보다 높은 분해능의 우선 순위를 지정합니다.
   private static final int FRAMERATE_THRESHOLD = 15;
   private TextView captureFormatText;
   private CallFragment.OnCallEvents callEvents;
@@ -79,6 +80,7 @@ public class CaptureQualityController implements SeekBar.OnSeekBarChangeListener
     }
 
     // Extract max bandwidth (in millipixels / second).
+    // 최대 대역폭을 추출합니다(밀리픽셀/초 단위).
     long maxCaptureBandwidth = java.lang.Long.MIN_VALUE;
     for (CaptureFormat format : formats) {
       maxCaptureBandwidth =

@@ -54,34 +54,29 @@ public class UnhandledExceptionHandler implements Thread.UncaughtExceptionHandle
 
   @Override
   public void uncaughtException(Thread unusedThread, final Throwable e) {
-    activity.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        String title = "Fatal error: " + getTopLevelCauseMessage(e);
-        String msg = getRecursiveStackTrace(e);
-        TextView errorView = new TextView(activity);
-        errorView.setText(msg);
-        errorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
-        ScrollView scrollingContainer = new ScrollView(activity);
-        scrollingContainer.addView(errorView);
-        Log.e(TAG, title + "\n\n" + msg);
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-            System.exit(1);
-          }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title)
-            .setView(scrollingContainer)
-            .setPositiveButton("Exit", listener)
-            .show();
-      }
+    activity.runOnUiThread(() -> {
+      String title = "Fatal error: " + getTopLevelCauseMessage(e);
+      String msg = getRecursiveStackTrace(e);
+      TextView errorView = new TextView(activity);
+      errorView.setText(msg);
+      errorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
+      ScrollView scrollingContainer = new ScrollView(activity);
+      scrollingContainer.addView(errorView);
+      Log.e(TAG, title + "\n\n" + msg);
+      DialogInterface.OnClickListener listener = (dialog, which) -> {
+        dialog.dismiss();
+        System.exit(1);
+      };
+      AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+      builder.setTitle(title)
+          .setView(scrollingContainer)
+          .setPositiveButton("Exit", listener)
+          .show();
     });
   }
 
   // Returns the Message attached to the original Cause of |t|.
+  // 원래 원인인 |t|에 첨부된 메시지를 반환합니다.
   private static String getTopLevelCauseMessage(Throwable t) {
     Throwable topLevelCause = t;
     while (topLevelCause.getCause() != null) {
@@ -90,8 +85,8 @@ public class UnhandledExceptionHandler implements Thread.UncaughtExceptionHandle
     return topLevelCause.getMessage();
   }
 
-  // Returns a human-readable String of the stacktrace in |t|, recursively
-  // through all Causes that led to |t|.
+  // Returns a human-readable String of the stacktrace in |t|, recursively through all Causes that led to |t|.
+  // |t|에서 사람이 읽을 수 있는 스택 추적 문자열을 반환합니다. |t|로 이어지는 모든 원인을 반복해서 설명합니다.
   private static String getRecursiveStackTrace(Throwable t) {
     StringWriter writer = new StringWriter();
     t.printStackTrace(new PrintWriter(writer));

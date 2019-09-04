@@ -126,8 +126,7 @@ public class SettingsActivity extends Activity implements OnSharedPreferenceChan
   protected void onResume() {
     super.onResume();
     // Set summary to be the user-description for the selected value
-    SharedPreferences sharedPreferences =
-        settingsFragment.getPreferenceScreen().getSharedPreferences();
+    SharedPreferences sharedPreferences = settingsFragment.getPreferenceScreen().getSharedPreferences();
     sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     updateSummaryB(sharedPreferences, keyprefVideoCall);
     updateSummaryB(sharedPreferences, keyprefScreencapture);

@@ -96,15 +96,12 @@ public class ConnectActivity extends Activity {
     setContentView(R.layout.activity_connect);
 
     roomEditText = findViewById(R.id.room_edittext);
-    roomEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        if (i == EditorInfo.IME_ACTION_DONE) {
-          addFavoriteButton.performClick();
-          return true;
-        }
-        return false;
+    roomEditText.setOnEditorActionListener((textView, i, keyEvent) -> {
+      if (i == EditorInfo.IME_ACTION_DONE) {
+        addFavoriteButton.performClick();
+        return true;
       }
+      return false;
     });
     roomEditText.requestFocus();
 
@@ -220,8 +217,8 @@ public class ConnectActivity extends Activity {
     if (requestCode == PERMISSION_REQUEST) {
       String[] missingPermissions = getMissingPermissions();
       if (missingPermissions.length != 0) {
-        // User didn't grant all the permissions. Warn that the application might not work
-        // correctly.
+        // User didn't grant all the permissions. Warn that the application might not work correctly.
+        // 사용자가 모든 권한을 부여하지 않았습니다. 응용 프로그램이 제대로 작동하지 않을 수 있음을 경고합니다.
         new AlertDialog.Builder(this)
             .setMessage(R.string.missing_permissions_try_again)
             .setPositiveButton(R.string.yes,
@@ -304,8 +301,7 @@ public class ConnectActivity extends Activity {
   }
 
   /**
-   * Get a value from the shared preference or from the intent, if it does not
-   * exist the default is used.
+   * Get a value from the shared preference or from the intent, if it does not exist the default is used.
    */
   private String sharedPrefGetString(
       int attributeId, String intentName, int defaultId, boolean useFromIntent) {
@@ -323,8 +319,7 @@ public class ConnectActivity extends Activity {
   }
 
   /**
-   * Get a value from the shared preference or from the intent, if it does not
-   * exist the default is used.
+   * Get a value from the shared preference or from the intent, if it does not exist the default is used.
    */
   private boolean sharedPrefGetBoolean(
       int attributeId, String intentName, int defaultId, boolean useFromIntent) {
@@ -338,8 +333,7 @@ public class ConnectActivity extends Activity {
   }
 
   /**
-   * Get a value from the shared preference or from the intent, if it does not
-   * exist the default is used.
+   * Get a value from the shared preference or from the intent, if it does not exist the default is used.
    */
   private int sharedPrefGetInteger(
       int attributeId, String intentName, int defaultId, boolean useFromIntent) {
@@ -632,25 +626,17 @@ public class ConnectActivity extends Activity {
         .setMessage(getString(R.string.invalid_url_text, url))
         .setCancelable(false)
         .setNeutralButton(R.string.ok,
-            new DialogInterface.OnClickListener() {
-              @Override
-              public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-              }
-            })
+                (dialog, id) -> dialog.cancel())
         .create()
         .show();
     return false;
   }
 
   private final AdapterView.OnItemClickListener roomListClickListener =
-      new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-          String roomId = ((TextView) view).getText().toString();
-          connectToRoom(roomId, false, false, false, 0);
-        }
-      };
+          (adapterView, view, i, l) -> {
+            String roomId = ((TextView) view).getText().toString();
+            connectToRoom(roomId, false, false, false, 0);
+          };
 
   private final OnClickListener addFavoriteListener = new OnClickListener() {
     @Override

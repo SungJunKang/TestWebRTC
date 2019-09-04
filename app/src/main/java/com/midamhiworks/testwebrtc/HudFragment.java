@@ -62,14 +62,11 @@ public class HudFragment extends Fragment {
     hudViewVideoRecv = controlView.findViewById(R.id.hud_stat_video_recv);
     toggleDebugButton = controlView.findViewById(R.id.button_toggle_debug);
 
-    toggleDebugButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (displayHud) {
-          int visibility =
-              (hudViewBwe.getVisibility() == View.VISIBLE) ? View.INVISIBLE : View.VISIBLE;
-          hudViewsSetProperties(visibility);
-        }
+    toggleDebugButton.setOnClickListener(view -> {
+      if (displayHud) {
+        int visibility =
+            (hudViewBwe.getVisibility() == View.VISIBLE) ? View.INVISIBLE : View.VISIBLE;
+        hudViewsSetProperties(visibility);
       }
     });
 

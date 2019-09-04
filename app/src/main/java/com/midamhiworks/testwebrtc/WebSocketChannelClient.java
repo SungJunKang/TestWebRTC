@@ -63,13 +63,13 @@ public class WebSocketChannelClient {
   @Nullable
   private String clientID;
   private WebSocketConnectionState state;
-  // Do not remove this member variable. If this is removed, the observer gets garbage collected and
-  // this causes test breakages.
+  // Do not remove this member variable. If this is removed, the observer gets garbage collected and this causes test breakages.
+  // 이 멤버 변수를 제거하지 않습니다. 이를 제거하면 관찰자가 가비지를 수집하여 테스트가 중단됩니다.
   private WebSocketObserver wsObserver;
   private final Object closeEventLock = new Object();
   private boolean closeEvent;
-  // WebSocket send queue. Messages are added to the queue when WebSocket
-  // client is not registered and are consumed in register() call.
+  // WebSocket send queue. Messages are added to the queue when WebSocket client is not registered and are consumed in register() call.
+  // WebSocket 송신 대기열입니다. WebSocket 클라이언트가 등록되어 있지 않고 register() 호출에 사용되는 경우 메시지가 대기열에 추가됩니다.
   private final List<String> wsSendQueue = new ArrayList<>();
 
   /**
@@ -153,8 +153,8 @@ public class WebSocketChannelClient {
     switch (state) {
       case NEW:
       case CONNECTED:
-        // Store outgoing messages and send them after websocket client
-        // is registered.
+        // Store outgoing messages and send them after websocket client is registered.
+        // 발신 메시지를 저장하고 웹 소켓 클라이언트가 등록되면 발송합니다.
         Log.d(TAG, "WS ACC: " + message);
         wsSendQueue.add(message);
         return;
@@ -177,8 +177,8 @@ public class WebSocketChannelClient {
     }
   }
 
-  // This call can be used to send WebSocket messages before WebSocket
-  // connection is opened.
+  // This call can be used to send WebSocket messages before WebSocket connection is opened.
+  // WebSocket 연결을 열기 전에 WebSocket 메시지를 보내는 데 이 통화를 사용할 수 있습니다.
   public void post(String message) {
     checkIfCalledOnValidThread();
     sendWSSMessage("POST", message);
@@ -199,8 +199,8 @@ public class WebSocketChannelClient {
       ws.disconnect();
       state = WebSocketConnectionState.CLOSED;
 
-      // Wait for websocket close event to prevent websocket library from
-      // sending any pending messages to deleted looper thread.
+      // Wait for websocket close event to prevent websocket library from sending any pending messages to deleted looper thread.
+      // Webocket Library가 삭제된 looper 스레드에 보류 중인 메시지를 보내지 못하도록 웹 소켓 닫기 이벤트를 기다립니다.
       if (waitForComplete) {
         synchronized (closeEventLock) {
           while (!closeEvent) {
@@ -219,18 +219,16 @@ public class WebSocketChannelClient {
 
   private void reportError(final String errorMessage) {
     Log.e(TAG, errorMessage);
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        if (state != WebSocketConnectionState.ERROR) {
-          state = WebSocketConnectionState.ERROR;
-          events.onWebSocketError(errorMessage);
-        }
+    handler.post(() -> {
+      if (state != WebSocketConnectionState.ERROR) {
+        state = WebSocketConnectionState.ERROR;
+        events.onWebSocketError(errorMessage);
       }
     });
   }
 
   // Asynchronously send POST/DELETE to WebSocket server.
+  // POST/DELETE를 WebSocket 서버로 비동기식으로 전송합니다.
   private void sendWSSMessage(final String method, final String message) {
     String postUrl = postServerUrl + "/" + roomID + "/" + clientID;
     Log.d(TAG, "WS " + method + " : " + postUrl + " : " + message);
@@ -247,8 +245,8 @@ public class WebSocketChannelClient {
     httpConnection.send();
   }
 
-  // Helper method for debugging purposes. Ensures that WebSocket method is
-  // called on a looper thread.
+  // Helper method for debugging purposes. Ensures that WebSocket method is called on a looper thread.
+  // 디버깅을 위한 도우미 방법입니다. 루퍼 스레드에서 WebSocket 메서드를 호출합니다.
   private void checkIfCalledOnValidThread() {
     if (Thread.currentThread() != handler.getLooper().getThread()) {
       throw new IllegalStateException("WebSocket method is not called on valid thread");
@@ -259,14 +257,11 @@ public class WebSocketChannelClient {
     @Override
     public void onOpen() {
       Log.d(TAG, "WebSocket connection opened to: " + wsServerUrl);
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          state = WebSocketConnectionState.CONNECTED;
-          // Check if we have pending register request.
-          if (roomID != null && clientID != null) {
-            register(roomID, clientID);
-          }
+      handler.post(() -> {
+        state = WebSocketConnectionState.CONNECTED;
+        // Check if we have pending register request.
+        if (roomID != null && clientID != null) {
+          register(roomID, clientID);
         }
       });
     }
@@ -279,13 +274,10 @@ public class WebSocketChannelClient {
         closeEvent = true;
         closeEventLock.notify();
       }
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          if (state != WebSocketConnectionState.CLOSED) {
-            state = WebSocketConnectionState.CLOSED;
-            events.onWebSocketClose();
-          }
+      handler.post(() -> {
+        if (state != WebSocketConnectionState.CLOSED) {
+          state = WebSocketConnectionState.CLOSED;
+          events.onWebSocketClose();
         }
       });
     }
@@ -294,13 +286,10 @@ public class WebSocketChannelClient {
     public void onTextMessage(String payload) {
       Log.d(TAG, "WSS->C: " + payload);
       final String message = payload;
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          if (state == WebSocketConnectionState.CONNECTED
-              || state == WebSocketConnectionState.REGISTERED) {
-            events.onWebSocketMessage(message);
-          }
+      handler.post(() -> {
+        if (state == WebSocketConnectionState.CONNECTED
+            || state == WebSocketConnectionState.REGISTERED) {
+          events.onWebSocketMessage(message);
         }
       });
     }

@@ -6,6 +6,14 @@
  *  tree. An additional intellectual property rights grant can be found
  *  in the file PATENTS.  All contributing project authors may
  *  be found in the AUTHORS file in the root of the source tree.
+ *
+ * 2014 WebRTC 프로젝트 작성자를 저작권합니다. 무단 전재 금지
+ *
+ * 이 소스 코드의 사용은 BSD 스타일 라이센스에 의해 관리됩니다.
+ * 소스 루트의 LICENSE 파일에서 찾을 수 있습니다.
+ * 나무요 추가 지적 재산권 부여를 찾을 수 있습니다.
+ * PATENTS 파일에 있습니다. 모든 기여 프로젝트 작성자는 다음을 수행할 수 있습니다.
+ * 소스 트리의 루트에 있는 AUTHORS 파일에서 찾을 수 있습니다.
  */
 
 package com.midamhiworks.testwebrtc;
@@ -87,7 +95,7 @@ import org.webrtc.audio.JavaAudioDeviceModule.AudioTrackErrorCallback;
  *
  * 모든 공개 방법은 로컬 루퍼 스레드로 라우팅됩니다.
  * 모든 PeerConnectionEvents 콜백은 동일한 루퍼 스레드에서 호출됩니다.
- *  이 수업은 싱글톤입니다.
+ *  이 class 는 싱글톤입니다.
  */
 
 /*
@@ -110,11 +118,9 @@ public class PeerConnectionClient {
   private static final String AUDIO_CODEC_OPUS = "opus";
   private static final String AUDIO_CODEC_ISAC = "ISAC";
   private static final String VIDEO_CODEC_PARAM_START_BITRATE = "x-google-start-bitrate";
-  private static final String VIDEO_FLEXFEC_FIELDTRIAL =
-      "WebRTC-FlexFEC-03-Advertised/Enabled/WebRTC-FlexFEC-03/Enabled/";
+  private static final String VIDEO_FLEXFEC_FIELDTRIAL = "WebRTC-FlexFEC-03-Advertised/Enabled/WebRTC-FlexFEC-03/Enabled/";
   private static final String VIDEO_VP8_INTEL_HW_ENCODER_FIELDTRIAL = "WebRTC-IntelVP8/Enabled/";
-  private static final String DISABLE_WEBRTC_AGC_FIELDTRIAL =
-      "WebRTC-Audio-MinimizeResamplingOnMobile/Enabled/";
+  private static final String DISABLE_WEBRTC_AGC_FIELDTRIAL = "WebRTC-Audio-MinimizeResamplingOnMobile/Enabled/";
   private static final String AUDIO_CODEC_PARAM_BITRATE = "maxaveragebitrate";
   private static final String AUDIO_ECHO_CANCELLATION_CONSTRAINT = "googEchoCancellation";
   private static final String AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT = "googAutoGainControl";
@@ -126,9 +132,13 @@ public class PeerConnectionClient {
   private static final int BPS_IN_KBPS = 1000;
   private static final String RTCEVENTLOG_OUTPUT_DIR_NAME = "rtc_event_log";
 
-  // Executor thread is started once in private ctor and is used for all
-  // peer connection API calls to ensure new peer connection factory is
+  // Executor thread is started once in private ctor and is used for all peer connection API calls to ensure new peer connection factory is
   // created on the same thread as previously destroyed factory.
+  // 실행자 스레드는 개인 ctor에서 한 번 시작되며 모든 피어 연결 API 호출에 사용됩니다. 새 피어 연결 팩토리는 이전에 파괴된 공장과 동일한 스레드에 생성됩니다.
+
+  /*
+    실행자 스레드는 개인 ctor 에서 한 번 시작되며 모든 피어 연결 API 호출에 사용되어 이전에 파괴된 공장과 동일한 스레드에 새 피어 연결 팩토리가 생성됩니다.
+  */
   private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
   private final PCObserver pcObserver = new PCObserver();
@@ -159,17 +169,24 @@ public class PeerConnectionClient {
   private int videoFps;
   private MediaConstraints audioConstraints;
   private MediaConstraints sdpMediaConstraints;
-  // Queued remote ICE candidates are consumed only after both local and
-  // remote descriptions are set. Similarly local ICE candidates are sent to
+  // Queued remote ICE candidates are consumed only after both local and remote descriptions are set. Similarly local ICE candidates are sent to
   // remote peer after both local and remote description are set.
+  // 대기 중인 원격 ICE 후보자는 로컬 및 원격 설명이 모두 설정된 후에만 소비됩니다. 마찬가지로 로컬 ICE 후보자들은 다음 주소로 전송됩니다.
+  // 로컬 및 원격 설명이 모두 설정된 후 원격 피어입니다.
+
+  /*
+  대기 중인 원격 ICE 후보자는 로컬 및 원격 설명이 모두 설정된 후에만 소비됩니다. 마찬가지로 로컬 ICE 후보자는 로컬 및 원격 설명을 모두 설정한 후 원격 피어로 전송됩니다.
+  */
   @Nullable
   private List<IceCandidate> queuedRemoteCandidates;
   private boolean isInitiator;
   @Nullable
   private SessionDescription localSdp; // either offer or answer SDP
+  // SDP 를 제공하거나 응답합니다.
   @Nullable
   private VideoCapturer videoCapturer;
   // enableVideo is set to true if video should be rendered and sent.
+  // enableVideo 는 비디오를 렌더링하고 전송해야 하는 경우 true 로 설정됩니다.
   private boolean renderVideo = true;
   @Nullable
   private VideoTrack localVideoTrack;
@@ -178,6 +195,7 @@ public class PeerConnectionClient {
   @Nullable
   private RtpSender localVideoSender;
   // enableAudio is set to true if audio should be sent.
+  // 오디오를 전송해야 하는 경우 오디오가 true 로 설정됩니다.
   private boolean enableAudio = true;
   @Nullable
   private AudioTrack localAudioTrack;
@@ -185,10 +203,11 @@ public class PeerConnectionClient {
   private DataChannel dataChannel;
   private final boolean dataChannelEnabled;
   // Enable RtcEventLog.
+  // RtcEventLog를 활성화합니다.
   @Nullable
   private RtcEventLog rtcEventLog;
-  // Implements the WebRtcAudioRecordSamplesReadyCallback interface and writes
-  // recorded audio samples to an output file.
+    // Implements the WebRtcAudioRecordSamplesReadyCallback interface and writes recorded audio samples to an output file.
+    // WebRtcAudioRecordSamplesReadyCallback 인터페이스를 구현하고 기록된 오디오 샘플을 출력 파일에 기록합니다.
   @Nullable private RecordedAudioToFileController saveRecordedAudioToFile;
 
   /**
@@ -292,26 +311,22 @@ public class PeerConnectionClient {
     void onIceCandidatesRemoved(final IceCandidate[] candidates);
 
     /**
-     * Callback fired once connection is established (IceConnectionState is
-     * CONNECTED).
+     * Callback fired once connection is established (IceConnectionState is CONNECTED).
      */
     void onIceConnected();
 
     /**
-     * Callback fired once connection is disconnected (IceConnectionState is
-     * DISCONNECTED).
+     * Callback fired once connection is disconnected (IceConnectionState is DISCONNECTED).
      */
     void onIceDisconnected();
 
     /**
-     * Callback fired once DTLS connection is established (PeerConnectionState
-     * is CONNECTED).
+     * Callback fired once DTLS connection is established (PeerConnectionState is CONNECTED).
      */
     void onConnected();
 
     /**
-     * Callback fired once DTLS connection is disconnected (PeerConnectionState
-     * is DISCONNECTED).
+     * Callback fired once DTLS connection is disconnected (PeerConnectionState is DISCONNECTED).
      */
     void onDisconnected();
 
@@ -332,8 +347,7 @@ public class PeerConnectionClient {
   }
 
   /**
-   * Create a PeerConnectionClient with the specified parameters. PeerConnectionClient takes
-   * ownership of |eglBase|.
+   * Create a PeerConnectionClient with the specified parameters. PeerConnectionClient takes ownership of |eglBase|.
    */
   public PeerConnectionClient(Context appContext, EglBase eglBase,
       PeerConnectionParameters peerConnectionParameters, PeerConnectionEvents events) {
@@ -410,19 +424,20 @@ public class PeerConnectionClient {
 
     if (peerConnectionParameters.tracing) {
       PeerConnectionFactory.startInternalTracingCapture(
-          Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-          + "webrtc-trace.txt");
+          Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "webrtc-trace.txt");
     }
 
     // Check if ISAC is used by default.
+    // ISAC 가 기본적으로 사용되는지 확인합니다
     preferIsac = peerConnectionParameters.audioCodec != null
         && peerConnectionParameters.audioCodec.equals(AUDIO_CODEC_ISAC);
 
-    // It is possible to save a copy in raw PCM format on a file by checking
-    // the "Save input audio to file" checkbox in the Settings UI. A callback
-    // interface is set when this flag is enabled. As a result, a copy of recorded
-    // audio samples are provided to this client directly from the native audio
-    // layer in Java.
+    // It is possible to save a copy in raw PCM format on a file by checking the "Save input audio to file" checkbox in the Settings UI.
+    // A callback interface is set when this flag is enabled. As a result, a copy of recorded audio samples are provided to this client directly
+    // from the native audio layer in Java.
+    // 설정 UI에서 "입력 오디오를 파일에 저장" 확인란을 선택하여 사본을 파일에 원시 PCM 형식으로 저장할 수 있습니다.
+    // 이 플래그가 활성화되면 콜백 인터페이스가 설정됩니다. 따라서 녹음된 오디오 샘플의 사본이 이 클라이언트에 직접 제공됩니다.
+    // Java 의 기본 오디오 계층입니다.
     if (peerConnectionParameters.saveInputAudioToFile) {
       if (!peerConnectionParameters.useOpenSLES) {
         Log.d(TAG, "Enable recording of microphone input audio to file");
@@ -430,6 +445,7 @@ public class PeerConnectionClient {
       } else {
         // TODO(henrika): ensure that the UI reflects that if OpenSL ES is selected,
         // then the "Save inut audio to file" option shall be grayed out.
+        // 그런 다음 "Save audio to file" 옵션이 회색으로 비활성화됩니다.
         Log.e(TAG, "Recording of input audio is not supported for OpenSL ES");
       }
     }
@@ -576,8 +592,8 @@ public class PeerConnectionClient {
 
     PeerConnection.RTCConfiguration rtcConfig =
         new PeerConnection.RTCConfiguration(signalingParameters.iceServers);
-    // TCP candidates are only useful when connecting to a server that supports
-    // ICE-TCP.
+    // TCP candidates are only useful when connecting to a server that supports ICE-TCP.
+    // TCP 후보는 ICE-TCP 를 지원하는 서버에 연결할 때만 유용합니다.
     rtcConfig.tcpCandidatePolicy = PeerConnection.TcpCandidatePolicy.DISABLED;
     rtcConfig.bundlePolicy = PeerConnection.BundlePolicy.MAXBUNDLE;
     rtcConfig.rtcpMuxPolicy = PeerConnection.RtcpMuxPolicy.REQUIRE;
@@ -585,6 +601,7 @@ public class PeerConnectionClient {
     // Use ECDSA encryption.
     rtcConfig.keyType = PeerConnection.KeyType.ECDSA;
     // Enable DTLS for normal calls and disable for loopback calls.
+    // 일반 호출에는 DTLS를, 루프백 호출에는 비활성화합니다.
     rtcConfig.enableDtlsSrtp = !peerConnectionParameters.loopback;
     rtcConfig.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
 
@@ -609,8 +626,8 @@ public class PeerConnectionClient {
     List<String> mediaStreamLabels = Collections.singletonList("ARDAMS");
     if (isVideoCallEnabled()) {
       peerConnection.addTrack(createVideoTrack(videoCapturer), mediaStreamLabels);
-      // We can add the renderers right away because we don't need to wait for an
-      // answer to get the remote track.
+      // We can add the renderers right away because we don't need to wait for an answer to get the remote track.
+      // 원격 트랙을 얻기 위해 답변을 기다릴 필요가 없기 때문에 렌더러를 즉시 추가할 수 있습니다.
       remoteVideoTrack = getRemoteVideoTrack();
       remoteVideoTrack.setEnabled(renderVideo);
       for (VideoSink remoteSink : remoteSinks) {
@@ -675,6 +692,7 @@ public class PeerConnectionClient {
     }
     if (rtcEventLog != null) {
       // RtcEventLog should stop before the peer connection is disposed.
+      // RtcEventLog는 피어 연결을 삭제하기 전에 중지해야 합니다.
       rtcEventLog.stop();
       rtcEventLog = null;
     }
@@ -735,12 +753,7 @@ public class PeerConnectionClient {
     if (peerConnection == null || isError) {
       return;
     }
-    boolean success = peerConnection.getStats(new StatsObserver() {
-      @Override
-      public void onComplete(final StatsReport[] reports) {
-        events.onPeerConnectionStatsReady(reports);
-      }
-    }, null);
+    boolean success = peerConnection.getStats(reports -> events.onPeerConnectionStatsReady(reports), null);
     if (!success) {
       Log.e(TAG, "getStats() returns false!");
     }
@@ -821,8 +834,8 @@ public class PeerConnectionClient {
       if (peerConnection == null || isError) {
         return;
       }
-      // Drain the queued remote candidates if there is any so that
-      // they are processed in the proper order.
+      // Drain the queued remote candidates if there is any so that they are processed in the proper order.
+      // 대기 중인 원격 후보자가 올바른 순서로 처리되도록 배수합니다.
       drainCandidates();
       peerConnection.removeIceCandidates(candidates);
     });
@@ -947,6 +960,7 @@ public class PeerConnectionClient {
   }
 
   // Returns the remote VideoTrack, assuming there is only one.
+  // 원격 VideoTrack 이 하나뿐이라고 가정하여 반환합니다.
   private @Nullable VideoTrack getRemoteVideoTrack() {
     for (RtpTransceiver transceiver : peerConnection.getTransceivers()) {
       MediaStreamTrack track = transceiver.getReceiver().track();
@@ -1010,8 +1024,8 @@ public class PeerConnectionClient {
     }
     Log.d(TAG, "Found " + codec + " rtpmap " + codecRtpMap + " at " + lines[rtpmapLineIndex]);
 
-    // Check if a=fmtp string already exist in remote SDP for this codec and
-    // update it with new bitrate parameter.
+    // Check if a=fmtp string already exist in remote SDP for this codec and update it with new bitrate parameter.
+    // 이 코덱의 원격 SDP에 a=fmtp 문자열이 이미 있는지 확인하고 새 비트레이트 매개 변수로 업데이트합니다.
     regex = "^a=fmtp:" + codecRtpMap + " \\w+=\\d+.*[\r]?$";
     codecPattern = Pattern.compile(regex);
     for (int i = 0; i < lines.length; i++) {
@@ -1033,6 +1047,7 @@ public class PeerConnectionClient {
     for (int i = 0; i < lines.length; i++) {
       newSdpDescription.append(lines[i]).append("\r\n");
       // Append new a=fmtp line if no such line exist for a codec.
+      // 코덱에 대해 해당 라인이 없는 경우 새 a=fmtp 라인을 추가합니다.
       if (!sdpFormatUpdated && i == rtpmapLineIndex) {
         String bitrateSet;
         if (isVideoCodec) {
@@ -1079,6 +1094,7 @@ public class PeerConnectionClient {
   private static @Nullable String movePayloadTypesToFront(
       List<String> preferredPayloadTypes, String mLine) {
     // The format of the media description line should be: m=<media> <port> <proto> <fmt> ...
+    // 미디어 설명 라인의 형식은 다음과 같아야 합니다: m=<media > <port> <proto> <fmt>...
     final List<String> origLineParts = Arrays.asList(mLine.split(" "));
     if (origLineParts.size() <= 3) {
       Log.e(TAG, "Wrong SDP media description format: " + mLine);
@@ -1088,8 +1104,8 @@ public class PeerConnectionClient {
     final List<String> unpreferredPayloadTypes =
         new ArrayList<>(origLineParts.subList(3, origLineParts.size()));
     unpreferredPayloadTypes.removeAll(preferredPayloadTypes);
-    // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload
-    // types.
+    // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload types.
+    // |preferredPayload로 라인을 재구성합니다.Types| payload type의 시작 부분으로 이동했습니다.
     final List<String> newLineParts = new ArrayList<>();
     newLineParts.addAll(header);
     newLineParts.addAll(preferredPayloadTypes);
@@ -1104,8 +1120,8 @@ public class PeerConnectionClient {
       Log.w(TAG, "No mediaDescription line, so can't prefer " + codec);
       return sdpDescription;
     }
-    // A list with all the payload types with name |codec|. The payload types are integers in the
-    // range 96-127, but they are stored as strings here.
+    // A list with all the payload types with name |codec|. The payload types are integers in the range 96-127, but they are stored as strings here.
+    // 모든 페이로드 유형이 |코덱|인 목록입니다. 페이로드 유형은 96-127 범위의 정수이지만 여기서 문자열로 저장됩니다.
     final List<String> codecPayloadTypes = new ArrayList<>();
     // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
     final Pattern codecPattern = Pattern.compile("^a=rtpmap:(\\d+) " + codec + "(/\\d+)+[\r]?$");
@@ -1269,16 +1285,16 @@ public class PeerConnectionClient {
 
     @Override
     public void onRenegotiationNeeded() {
-      // No need to do anything; AppRTC follows a pre-agreed-upon
-      // signaling/negotiation protocol.
+      // No need to do anything; AppRTC follows a pre-agreed-upon signaling/negotiation protocol.
+      // 아무것도 할 필요가 없습니다. AppRTC 는 사전 합의된 신호/협상 프로토콜을 따릅니다.
     }
 
     @Override
     public void onAddTrack(final RtpReceiver receiver, final MediaStream[] mediaStreams) {}
   }
 
-  // Implementation detail: handle offer creation/signaling and answer setting,
-  // as well as adding remote ICE candidates once the answer SDP is set.
+  // Implementation detail: handle offer creation/signaling and answer setting, as well as adding remote ICE candidates once the answer SDP is set.
+  // 구현 세부 정보: SDP가 설정되면 생성/신호 및 응답 설정을 처리하고 원격 ICE 후보를 추가합니다.
   private class SDPObserver implements SdpObserver {
     @Override
     public void onCreateSuccess(final SessionDescription origSdp) {
@@ -1311,30 +1327,31 @@ public class PeerConnectionClient {
           return;
         }
         if (isInitiator) {
-          // For offering peer connection we first create offer and set
-          // local SDP, then after receiving answer set remote SDP.
+          // For offering peer connection we first create offer and set local SDP, then after receiving answer set remote SDP.
+          // 피어 연결을 제공하기 위해 먼저 오퍼링을 생성하고 로컬 SDP를 설정한 후 원격 SDP를 설정합니다.
           if (peerConnection.getRemoteDescription() == null) {
             // We've just set our local SDP so time to send it.
+            // 방금 지역 SDP를 보내드릴 시간을 정했습니다.
             Log.d(TAG, "Local SDP set succesfully");
             events.onLocalDescription(localSdp);
           } else {
-            // We've just set remote description, so drain remote
-            // and send local ICE candidates.
+            // We've just set remote description, so drain remote and send local ICE candidates.
+            // 방금 원격 설명을 설정했으므로 원격으로 원격으로 정보를 빼내고 지역 ICE 후보자들을 전송합니다.
             Log.d(TAG, "Remote SDP set succesfully");
             drainCandidates();
           }
         } else {
-          // For answering peer connection we set remote SDP and then
-          // create answer and set local SDP.
+          // For answering peer connection we set remote SDP and then create answer and set local SDP.
+          // 피어 연결 응답에 대해 원격 SDP 를 설정한 다음 응답을 생성하고 로컬 SDP를 설정합니다.
           if (peerConnection.getLocalDescription() != null) {
-            // We've just set our local SDP so time to send it, drain
-            // remote and send local ICE candidates.
+            // We've just set our local SDP so time to send it, drain remote and send local ICE candidates.
+            // 방금 지역 SDP 를 설정하여 전송하고 원격으로 배출하고 지역 ICE 후보를 보낼 시간을 정했습니다.
             Log.d(TAG, "Local SDP set succesfully");
             events.onLocalDescription(localSdp);
             drainCandidates();
           } else {
-            // We've just set remote SDP - do nothing for now -
-            // answer will be created soon.
+            // We've just set remote SDP - do nothing for now - answer will be created soon.
+            // 방금 원격 SDP를 설정했는데, 지금은 아무것도 하지 않습니다. 곧 답이 만들어집니다.
             Log.d(TAG, "Remote SDP set succesfully");
           }
         }

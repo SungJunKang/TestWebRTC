@@ -15,7 +15,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjection;
@@ -82,64 +81,58 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
                                                       CallFragment.OnCallEvents {
   private static final String TAG = "CallRTCClient";
 
-  public static final String EXTRA_ROOMID = "org.appspot.apprtc.ROOMID";
-  public static final String EXTRA_URLPARAMETERS = "org.appspot.apprtc.URLPARAMETERS";
-  public static final String EXTRA_LOOPBACK = "org.appspot.apprtc.LOOPBACK";
-  public static final String EXTRA_VIDEO_CALL = "org.appspot.apprtc.VIDEO_CALL";
-  public static final String EXTRA_SCREENCAPTURE = "org.appspot.apprtc.SCREENCAPTURE";
-  public static final String EXTRA_CAMERA2 = "org.appspot.apprtc.CAMERA2";
-  public static final String EXTRA_VIDEO_WIDTH = "org.appspot.apprtc.VIDEO_WIDTH";
-  public static final String EXTRA_VIDEO_HEIGHT = "org.appspot.apprtc.VIDEO_HEIGHT";
-  public static final String EXTRA_VIDEO_FPS = "org.appspot.apprtc.VIDEO_FPS";
-  public static final String EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED =
-      "org.appsopt.apprtc.VIDEO_CAPTUREQUALITYSLIDER";
-  public static final String EXTRA_VIDEO_BITRATE = "org.appspot.apprtc.VIDEO_BITRATE";
-  public static final String EXTRA_VIDEOCODEC = "org.appspot.apprtc.VIDEOCODEC";
-  public static final String EXTRA_HWCODEC_ENABLED = "org.appspot.apprtc.HWCODEC";
-  public static final String EXTRA_CAPTURETOTEXTURE_ENABLED = "org.appspot.apprtc.CAPTURETOTEXTURE";
-  public static final String EXTRA_FLEXFEC_ENABLED = "org.appspot.apprtc.FLEXFEC";
-  public static final String EXTRA_AUDIO_BITRATE = "org.appspot.apprtc.AUDIO_BITRATE";
-  public static final String EXTRA_AUDIOCODEC = "org.appspot.apprtc.AUDIOCODEC";
-  public static final String EXTRA_NOAUDIOPROCESSING_ENABLED =
-      "org.appspot.apprtc.NOAUDIOPROCESSING";
-  public static final String EXTRA_AECDUMP_ENABLED = "org.appspot.apprtc.AECDUMP";
-  public static final String EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED =
-      "org.appspot.apprtc.SAVE_INPUT_AUDIO_TO_FILE";
-  public static final String EXTRA_OPENSLES_ENABLED = "org.appspot.apprtc.OPENSLES";
-  public static final String EXTRA_DISABLE_BUILT_IN_AEC = "org.appspot.apprtc.DISABLE_BUILT_IN_AEC";
-  public static final String EXTRA_DISABLE_BUILT_IN_AGC = "org.appspot.apprtc.DISABLE_BUILT_IN_AGC";
-  public static final String EXTRA_DISABLE_BUILT_IN_NS = "org.appspot.apprtc.DISABLE_BUILT_IN_NS";
-  public static final String EXTRA_DISABLE_WEBRTC_AGC_AND_HPF =
-      "org.appspot.apprtc.DISABLE_WEBRTC_GAIN_CONTROL";
-  public static final String EXTRA_DISPLAY_HUD = "org.appspot.apprtc.DISPLAY_HUD";
-  public static final String EXTRA_TRACING = "org.appspot.apprtc.TRACING";
-  public static final String EXTRA_CMDLINE = "org.appspot.apprtc.CMDLINE";
-  public static final String EXTRA_RUNTIME = "org.appspot.apprtc.RUNTIME";
-  public static final String EXTRA_VIDEO_FILE_AS_CAMERA = "org.appspot.apprtc.VIDEO_FILE_AS_CAMERA";
-  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE =
-      "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE";
-  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH =
-      "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_WIDTH";
-  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT =
-      "org.appspot.apprtc.SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT";
-  public static final String EXTRA_USE_VALUES_FROM_INTENT =
-      "org.appspot.apprtc.USE_VALUES_FROM_INTENT";
-  public static final String EXTRA_DATA_CHANNEL_ENABLED = "org.appspot.apprtc.DATA_CHANNEL_ENABLED";
-  public static final String EXTRA_ORDERED = "org.appspot.apprtc.ORDERED";
-  public static final String EXTRA_MAX_RETRANSMITS_MS = "org.appspot.apprtc.MAX_RETRANSMITS_MS";
-  public static final String EXTRA_MAX_RETRANSMITS = "org.appspot.apprtc.MAX_RETRANSMITS";
-  public static final String EXTRA_PROTOCOL = "org.appspot.apprtc.PROTOCOL";
-  public static final String EXTRA_NEGOTIATED = "org.appspot.apprtc.NEGOTIATED";
-  public static final String EXTRA_ID = "org.appspot.apprtc.ID";
-  public static final String EXTRA_ENABLE_RTCEVENTLOG = "org.appspot.apprtc.ENABLE_RTCEVENTLOG";
+  public static final String EXTRA_ROOMID = "com.midamhiworks.testwebrtc.ROOMID";
+  public static final String EXTRA_URLPARAMETERS = "com.midamhiworks.testwebrtc.URLPARAMETERS";
+  public static final String EXTRA_LOOPBACK = "com.midamhiworks.testwebrtc.LOOPBACK";
+  public static final String EXTRA_VIDEO_CALL = "com.midamhiworks.testwebrtc.VIDEO_CALL";
+  public static final String EXTRA_SCREENCAPTURE = "com.midamhiworks.testwebrtc.SCREENCAPTURE";
+  public static final String EXTRA_CAMERA2 = "com.midamhiworks.testwebrtc.CAMERA2";
+  public static final String EXTRA_VIDEO_WIDTH = "com.midamhiworks.testwebrtc.VIDEO_WIDTH";
+  public static final String EXTRA_VIDEO_HEIGHT = "com.midamhiworks.testwebrtc.VIDEO_HEIGHT";
+  public static final String EXTRA_VIDEO_FPS = "com.midamhiworks.testwebrtc.VIDEO_FPS";
+  public static final String EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED = "com.midamhiworks.testwebrtc.VIDEO_CAPTUREQUALITYSLIDER";
+  public static final String EXTRA_VIDEO_BITRATE = "com.midamhiworks.testwebrtc.VIDEO_BITRATE";
+  public static final String EXTRA_VIDEOCODEC = "com.midamhiworks.testwebrtc.VIDEOCODEC";
+  public static final String EXTRA_HWCODEC_ENABLED = "com.midamhiworks.testwebrtc.HWCODEC";
+  public static final String EXTRA_CAPTURETOTEXTURE_ENABLED = "com.midamhiworks.testwebrtc.CAPTURETOTEXTURE";
+  public static final String EXTRA_FLEXFEC_ENABLED = "com.midamhiworks.testwebrtc.FLEXFEC";
+  public static final String EXTRA_AUDIO_BITRATE = "com.midamhiworks.testwebrtc.AUDIO_BITRATE";
+  public static final String EXTRA_AUDIOCODEC = "com.midamhiworks.testwebrtc.AUDIOCODEC";
+  public static final String EXTRA_NOAUDIOPROCESSING_ENABLED = "com.midamhiworks.testwebrtc.NOAUDIOPROCESSING";
+  public static final String EXTRA_AECDUMP_ENABLED = "com.midamhiworks.testwebrtc.AECDUMP";
+  public static final String EXTRA_SAVE_INPUT_AUDIO_TO_FILE_ENABLED = "com.midamhiworks.testwebrtc.SAVE_INPUT_AUDIO_TO_FILE";
+  public static final String EXTRA_OPENSLES_ENABLED = "com.midamhiworks.testwebrtc.OPENSLES";
+  public static final String EXTRA_DISABLE_BUILT_IN_AEC = "com.midamhiworks.testwebrtc.DISABLE_BUILT_IN_AEC";
+  public static final String EXTRA_DISABLE_BUILT_IN_AGC = "com.midamhiworks.testwebrtc.DISABLE_BUILT_IN_AGC";
+  public static final String EXTRA_DISABLE_BUILT_IN_NS = "com.midamhiworks.testwebrtc.DISABLE_BUILT_IN_NS";
+  public static final String EXTRA_DISABLE_WEBRTC_AGC_AND_HPF = "com.midamhiworks.testwebrtc.DISABLE_WEBRTC_GAIN_CONTROL";
+  public static final String EXTRA_DISPLAY_HUD = "com.midamhiworks.testwebrtc.DISPLAY_HUD";
+  public static final String EXTRA_TRACING = "com.midamhiworks.testwebrtc.TRACING";
+  public static final String EXTRA_CMDLINE = "com.midamhiworks.testwebrtc.CMDLINE";
+  public static final String EXTRA_RUNTIME = "com.midamhiworks.testwebrtc.RUNTIME";
+  public static final String EXTRA_VIDEO_FILE_AS_CAMERA = "com.midamhiworks.testwebrtc.VIDEO_FILE_AS_CAMERA";
+  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE = "com.midamhiworks.testwebrtc.SAVE_REMOTE_VIDEO_TO_FILE";
+  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH = "com.midamhiworks.testwebrtc.SAVE_REMOTE_VIDEO_TO_FILE_WIDTH";
+  public static final String EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT = "com.midamhiworks.testwebrtc.SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT";
+  public static final String EXTRA_USE_VALUES_FROM_INTENT = "com.midamhiworks.testwebrtc.USE_VALUES_FROM_INTENT";
+  public static final String EXTRA_DATA_CHANNEL_ENABLED = "com.midamhiworks.testwebrtc.DATA_CHANNEL_ENABLED";
+  public static final String EXTRA_ORDERED = "com.midamhiworks.testwebrtc.ORDERED";
+  public static final String EXTRA_MAX_RETRANSMITS_MS = "com.midamhiworks.testwebrtc.MAX_RETRANSMITS_MS";
+  public static final String EXTRA_MAX_RETRANSMITS = "com.midamhiworks.testwebrtc.MAX_RETRANSMITS";
+  public static final String EXTRA_PROTOCOL = "com.midamhiworks.testwebrtc.PROTOCOL";
+  public static final String EXTRA_NEGOTIATED = "com.midamhiworks.testwebrtc.NEGOTIATED";
+  public static final String EXTRA_ID = "com.midamhiworks.testwebrtc.ID";
+  public static final String EXTRA_ENABLE_RTCEVENTLOG = "com.midamhiworks.testwebrtc.ENABLE_RTCEVENTLOG";
 
   private static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
 
   // List of mandatory application permissions.
+  // 필수 응용 프로그램 사용 권한 목록입니다.
   private static final String[] MANDATORY_PERMISSIONS = {"android.permission.MODIFY_AUDIO_SETTINGS",
       "android.permission.RECORD_AUDIO", "android.permission.INTERNET"};
 
   // Peer connection statistics callback period in ms.
+  // 피어 연결 통계 콜백 기간(ms)입니다.
   private static final int STAT_CALLBACK_PERIOD = 1000;
 
   private static class ProxyVideoSink implements VideoSink {
@@ -190,23 +183,25 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   private static Intent mediaProjectionPermissionResultData;
   private static int mediaProjectionPermissionResultCode;
   // True if local view is in the fullscreen renderer.
+  // 전체 화면 렌더러에 로컬 보기가 있는 경우 True 입니다.
   private boolean isSwappedFeeds;
 
   // Controls
+  // 제어합니다.
   private CallFragment callFragment;
   private HudFragment hudFragment;
   private CpuMonitor cpuMonitor;
 
   @Override
-  // TODO(bugs.webrtc.org/8580): LayoutParams.FLAG_TURN_SCREEN_ON and
-  // LayoutParams.FLAG_SHOW_WHEN_LOCKED are deprecated.
+  // TODO(bugs.webrtc.org/8580): LayoutParams.FLAG_TURN_SCREEN_ON and LayoutParams.FLAG_SHOW_WHEN_LOCKED are deprecated.
+  // TODO(bugs.webrtc.org/8580): LayoutParams(레이아웃 매개 변수)입니다.FLAG_TURN_SCREEN_ON 및 LayoutParams 입니다.FLAG_SHOW_WHEN_LOCKED 는 더 이상 사용되지 않습니다.
   @SuppressWarnings("deprecation")
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Thread.setDefaultUncaughtExceptionHandler(new UnhandledExceptionHandler(this));
 
-    // Set window styles for fullscreen-window size. Needs to be done before
-    // adding content.
+    // Set window styles for fullscreen-window size. Needs to be done before adding content.
+    // 전체 화면-창 크기에 대한 창 스타일을 설정합니다. 내용을 추가하기 전에 수행해야 합니다.
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     getWindow().addFlags(LayoutParams.FLAG_FULLSCREEN | LayoutParams.FLAG_KEEP_SCREEN_ON
         | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_TURN_SCREEN_ON);
@@ -217,26 +212,19 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     signalingParameters = null;
 
     // Create UI controls.
+    // UI 컨트롤을 만듭니다.
     pipRenderer = findViewById(R.id.pip_video_view);
     fullscreenRenderer = findViewById(R.id.fullscreen_video_view);
     callFragment = new CallFragment();
     hudFragment = new HudFragment();
 
     // Show/hide call control fragment on view click.
-    View.OnClickListener listener = new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        toggleCallControlFragmentVisibility();
-      }
-    };
+    // 뷰에 통화 제어 fragment 를 표시/숨깁니다. 클릭
+    View.OnClickListener listener = view -> toggleCallControlFragmentVisibility();
 
     // Swap feeds on pip view click.
-    pipRenderer.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        setSwappedFeeds(!isSwappedFeeds);
-      }
-    });
+    // pip view 클릭 시 swap feeds on pip view 클릭 시 swap feeds 입니다.
+    pipRenderer.setOnClickListener(view -> setSwappedFeeds(!isSwappedFeeds));
 
     fullscreenRenderer.setOnClickListener(listener);
     remoteSinks.add(remoteProxyRenderer);
@@ -245,11 +233,13 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     final EglBase eglBase = EglBase.create();
 
     // Create video renderers.
+    // 비디오 렌더러를 만듭니다.
     pipRenderer.init(eglBase.getEglBaseContext(), null);
     pipRenderer.setScalingType(ScalingType.SCALE_ASPECT_FIT);
     String saveRemoteVideoToFile = intent.getStringExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE);
 
     // When saveRemoteVideoToFile is set we save the video from the remote to a file.
+    // saveRemoteVideoToFile 을 설정하면 비디오를 원격에서 파일로 저장합니다.
     if (saveRemoteVideoToFile != null) {
       int videoOutWidth = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, 0);
       int videoOutHeight = intent.getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT, 0);
@@ -269,9 +259,11 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     pipRenderer.setEnableHardwareScaler(true /* enabled */);
     fullscreenRenderer.setEnableHardwareScaler(false /* enabled */);
     // Start with local feed in fullscreen and swap it to the pip when the call is connected.
+    // 전체 화면에서 로컬 피드를 시작하고 통화가 연결되면 피드로 바꿉니다.
     setSwappedFeeds(true /* isSwappedFeeds */);
 
     // Check for mandatory permissions.
+    // 필수 사용 권한을 확인합니다.
     for (String permission : MANDATORY_PERMISSIONS) {
       if (checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
         logAndToast("Permission " + permission + " is not granted");
@@ -291,6 +283,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     }
 
     // Get Intent parameters.
+    // Intent 매개변수를 가져옵니다.
     String roomId = intent.getStringExtra(EXTRA_ROOMID);
     Log.d(TAG, "Room ID: " + roomId);
     if (roomId == null || roomId.length() == 0) {
@@ -309,6 +302,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
     screencaptureEnabled = intent.getBooleanExtra(EXTRA_SCREENCAPTURE, false);
     // If capturing format is not specified for screencapture, use screen resolution.
+    // 캡처 형식이 화면 캡처에 지정되지 않은 경우 화면 해상도를 사용합니다.
     if (screencaptureEnabled && videoWidth == 0 && videoHeight == 0) {
       DisplayMetrics displayMetrics = getDisplayMetrics();
       videoWidth = displayMetrics.widthPixels;
@@ -342,8 +336,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
     Log.d(TAG, "VIDEO_FILE: '" + intent.getStringExtra(EXTRA_VIDEO_FILE_AS_CAMERA) + "'");
 
-    // Create connection client. Use DirectRTCClient if room name is an IP otherwise use the
-    // standard WebSocketRTCClient.
+    // Create connection client. Use DirectRTCClient if room name is an IP otherwise use the standard WebSocketRTCClient.
+    // 연결 클라이언트를 만듭니다. 룸 이름이 IP인 경우 DirectRTCClient 를 사용합니다. 그렇지 않으면 표준 WebSocketRTCClient를 사용합니다.
     if (loopback || !DirectRTCClient.IP_PATTERN.matcher(roomId).matches()) {
       appRtcClient = new WebSocketRTCClient(this);
     } else {
@@ -351,17 +345,20 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
       appRtcClient = new DirectRTCClient(this);
     }
     // Create connection parameters.
+    // 연결 매개 변수를 만듭니다.
     String urlParameters = intent.getStringExtra(EXTRA_URLPARAMETERS);
     roomConnectionParameters =
         new RoomConnectionParameters(roomUri.toString(), roomId, loopback, urlParameters);
 
     // Create CPU monitor
+    // CPU 모니터를 생성합니다.
     if (CpuMonitor.isSupported()) {
       cpuMonitor = new CpuMonitor(this);
       hudFragment.setCpuMonitor(cpuMonitor);
     }
 
     // Send intent arguments to fragments.
+    // fragments 에 intent 인수를 보냅니다.
     callFragment.setArguments(intent.getExtras());
     hudFragment.setArguments(intent.getExtras());
     // Activate call and HUD fragments and start the call.
@@ -371,16 +368,13 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     ft.commit();
 
     // For command line execution run connection for <runTimeMs> and exit.
+    // 명령줄 실행의 경우 [runTimeMs]에 대한 연결을 실행하고 종료합니다.
     if (commandLineRun && runTimeMs > 0) {
-      (new Handler()).postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          disconnect();
-        }
-      }, runTimeMs);
+      (new Handler()).postDelayed(() -> disconnect(), runTimeMs);
     }
 
     // Create peer connection client.
+    // 피어 연결 클라이언트를 만듭니다.
     peerConnectionClient = new PeerConnectionClient(
         getApplicationContext(), eglBase, peerConnectionParameters, CallActivity.this);
     PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
@@ -444,6 +438,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     final String[] deviceNames = enumerator.getDeviceNames();
 
     // First, try to find front facing camera
+    // 먼저 전면 카메라를 찾습니다.
     Logging.d(TAG, "Looking for front facing cameras.");
     for (String deviceName : deviceNames) {
       if (enumerator.isFrontFacing(deviceName)) {
@@ -457,6 +452,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     }
 
     // Front facing camera not found, try something else
+    // 전면 카메라를 찾을 수 없습니다. 다른 방법을 시도해 보십시오.
     Logging.d(TAG, "Looking for other cameras.");
     for (String deviceName : deviceNames) {
       if (!enumerator.isFrontFacing(deviceName)) {
@@ -492,8 +488,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   public void onStop() {
     super.onStop();
     activityRunning = false;
-    // Don't stop the video when using screencapture to allow user to show other apps to the remote
-    // end.
+    // Don't stop the video when using screencapture to allow user to show other apps to the remote end.
+    // 스크린캡처 사용 시 동영상을 중지하지 마십시오. 다른 앱을 원격으로 표시할 수 있습니다.
     if (peerConnectionClient != null && !screencaptureEnabled) {
       peerConnectionClient.stopVideoSource();
     }
@@ -507,6 +503,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     super.onStart();
     activityRunning = true;
     // Video is not paused for screencapture. See onPause.
+    // 화면 캡처를 위해 비디오가 일시 중지되지 않습니다. 일시 중지(OnPause)를 참조합니다.
     if (peerConnectionClient != null && !screencaptureEnabled) {
       peerConnectionClient.startVideoSource();
     }
@@ -590,21 +587,15 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     logAndToast(getString(R.string.connecting_to, roomConnectionParameters.roomUrl));
     appRtcClient.connectToRoom(roomConnectionParameters);
 
-    // Create and audio manager that will take care of audio routing,
-    // audio modes, audio device enumeration etc.
+    // Create and audio manager that will take care of audio routing, audio modes, audio device enumeration etc.
+    // 오디오 라우팅, 오디오 모드, 오디오 장치 열거 등을 처리할 오디오 관리자를 만듭니다.
     audioManager = AppRTCAudioManager.create(getApplicationContext());
-    // Store existing audio settings and change audio mode to
-    // MODE_IN_COMMUNICATION for best possible VoIP performance.
+    // Store existing audio settings and change audio mode to MODE_IN_COMMUNICATION for best possible VoIP performance.
+    // 기존 오디오 설정을 저장하고 최상의 VoIP 성능을 위해 오디오 모드를 MODE_IN_COMMUNICATION 으로 변경합니다.
     Log.d(TAG, "Starting the audio manager...");
-    audioManager.start(new AudioManagerEvents() {
-      // This method will be called each time the number of available audio
-      // devices has changed.
-      @Override
-      public void onAudioDeviceChanged(
-          AudioDevice audioDevice, Set<AudioDevice> availableAudioDevices) {
-        onAudioManagerDevicesChanged(audioDevice, availableAudioDevices);
-      }
-    });
+    // This method will be called each time the number of available audio devices has changed.
+    // 이 방법은 사용 가능한 오디오 장치의 수가 변경될 때마다 호출됩니다.
+    audioManager.start((audioDevice, availableAudioDevices) -> onAudioManagerDevicesChanged(audioDevice, availableAudioDevices));
   }
 
   // Should be called from UI thread
@@ -620,8 +611,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     setSwappedFeeds(false /* isSwappedFeeds */);
   }
 
-  // This method is called when the audio manager reports audio device change,
-  // e.g. from wired headset to speakerphone.
+  // This method is called when the audio manager reports audio device change, e.g. from wired headset to speakerphone.
+  // 이 방법은 오디오 관리자가 오디오 장치 변경을 보고할 때 호출됩니다(예: 유선 헤드셋에서 스피커폰으로).
   private void onAudioManagerDevicesChanged(
       final AudioDevice device, final Set<AudioDevice> availableDevices) {
     Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
@@ -630,6 +621,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   }
 
   // Disconnect from remote resources, dispose of local resources, and exit.
+  // 원격 리소스에서 연결을 끊고 로컬 리소스를 폐기한 후 종료합니다.
   private void disconnect() {
     activityRunning = false;
     remoteProxyRenderer.setTarget(null);
@@ -676,13 +668,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
           .setMessage(errorMessage)
           .setCancelable(false)
           .setNeutralButton(R.string.ok,
-              new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                  dialog.cancel();
-                  disconnect();
-                }
-              })
+                  (dialog, id) -> {
+                    dialog.cancel();
+                    disconnect();
+                  })
           .create()
           .show();
     }
@@ -699,13 +688,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   }
 
   private void reportError(final String description) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (!isError) {
-          isError = true;
-          disconnectWithErrorMessage(description);
-        }
+    runOnUiThread(() -> {
+      if (!isError) {
+        isError = true;
+        disconnectWithErrorMessage(description);
       }
     });
   }
@@ -751,8 +737,8 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   }
 
   // -----Implementation of AppRTCClient.AppRTCSignalingEvents ---------------
-  // All callbacks are invoked from websocket signaling looper thread and
-  // are routed to UI thread.
+  // All callbacks are invoked from websocket signaling looper thread and are routed to UI thread.
+  // 모든 콜백은 웹 소켓 신호 루퍼 스레드에서 호출되고 UI 스레드로 라우팅됩니다.
   private void onConnectedToRoomInternal(final SignalingParameters params) {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
 
@@ -767,15 +753,15 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
     if (signalingParameters.initiator) {
       logAndToast("Creating OFFER...");
-      // Create offer. Offer SDP will be sent to answering client in
-      // PeerConnectionEvents.onLocalDescription event.
+      // Create offer. Offer SDP will be sent to answering client in PeerConnectionEvents.onLocalDescription event.
+      // 오퍼링을 작성합니다. PeerConnectionEvents.onLocalDescription 이벤트의 응답 클라이언트로 SDP가 전송됩니다.
       peerConnectionClient.createOffer();
     } else {
       if (params.offerSdp != null) {
         peerConnectionClient.setRemoteDescription(params.offerSdp);
         logAndToast("Creating ANSWER...");
-        // Create answer. Answer SDP will be sent to offering client in
-        // PeerConnectionEvents.onLocalDescription event.
+        // Create answer. Answer SDP will be sent to offering client in PeerConnectionEvents.onLocalDescription event.
+        // 답변을 작성합니다. PeerConnectionEvents.onLocalDescription 이벤트의 오퍼링 클라이언트에 응답 SDP가 전송됩니다.
         peerConnectionClient.createAnswer();
       }
       if (params.iceCandidates != null) {
@@ -789,72 +775,55 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
   @Override
   public void onConnectedToRoom(final SignalingParameters params) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        onConnectedToRoomInternal(params);
-      }
-    });
+    runOnUiThread(() -> onConnectedToRoomInternal(params));
   }
 
   @Override
   public void onRemoteDescription(final SessionDescription sdp) {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (peerConnectionClient == null) {
-          Log.e(TAG, "Received remote SDP for non-initilized peer connection.");
-          return;
-        }
-        logAndToast("Received remote " + sdp.type + ", delay=" + delta + "ms");
-        peerConnectionClient.setRemoteDescription(sdp);
-        if (!signalingParameters.initiator) {
-          logAndToast("Creating ANSWER...");
-          // Create answer. Answer SDP will be sent to offering client in
-          // PeerConnectionEvents.onLocalDescription event.
-          peerConnectionClient.createAnswer();
-        }
+    runOnUiThread(() -> {
+      if (peerConnectionClient == null) {
+        Log.e(TAG, "Received remote SDP for non-initilized peer connection.");
+        return;
+      }
+      logAndToast("Received remote " + sdp.type + ", delay=" + delta + "ms");
+      peerConnectionClient.setRemoteDescription(sdp);
+      if (!signalingParameters.initiator) {
+        logAndToast("Creating ANSWER...");
+        // Create answer. Answer SDP will be sent to offering client in PeerConnectionEvents.onLocalDescription event.
+        // 답변을 작성합니다. PeerConnectionEvents.onLocalDescription 이벤트의 오퍼링 클라이언트에 응답 SDP가 전송됩니다.
+        peerConnectionClient.createAnswer();
       }
     });
   }
 
   @Override
   public void onRemoteIceCandidate(final IceCandidate candidate) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (peerConnectionClient == null) {
-          Log.e(TAG, "Received ICE candidate for a non-initialized peer connection.");
-          return;
-        }
-        peerConnectionClient.addRemoteIceCandidate(candidate);
+    runOnUiThread(() -> {
+      if (peerConnectionClient == null) {
+        Log.e(TAG, "Received ICE candidate for a non-initialized peer connection.");
+        return;
       }
+      peerConnectionClient.addRemoteIceCandidate(candidate);
     });
   }
 
   @Override
   public void onRemoteIceCandidatesRemoved(final IceCandidate[] candidates) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (peerConnectionClient == null) {
-          Log.e(TAG, "Received ICE candidate removals for a non-initialized peer connection.");
-          return;
-        }
-        peerConnectionClient.removeRemoteIceCandidates(candidates);
+    runOnUiThread(() -> {
+      if (peerConnectionClient == null) {
+        Log.e(TAG, "Received ICE candidate removals for a non-initialized peer connection.");
+        return;
       }
+      peerConnectionClient.removeRemoteIceCandidates(candidates);
     });
   }
 
   @Override
   public void onChannelClose() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        logAndToast("Remote end hung up; dropping PeerConnection");
-        disconnect();
-      }
+    runOnUiThread(() -> {
+      logAndToast("Remote end hung up; dropping PeerConnection");
+      disconnect();
     });
   }
 
@@ -865,50 +834,42 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
   // -----Implementation of PeerConnectionClient.PeerConnectionEvents.---------
   // Send local peer connection SDP and ICE candidates to remote party.
-  // All callbacks are invoked from peer connection client looper thread and
-  // are routed to UI thread.
+  // All callbacks are invoked from peer connection client looper thread and are routed to UI thread.
+  // 로컬 피어 연결 SDP 및 ICE 후보를 원격 파티로 보냅니다.
+  // 모든 콜백은 피어 연결 클라이언트 루퍼 스레드에서 호출되고 UI 스레드로 라우팅됩니다.
   @Override
   public void onLocalDescription(final SessionDescription sdp) {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (appRtcClient != null) {
-          logAndToast("Sending " + sdp.type + ", delay=" + delta + "ms");
-          if (signalingParameters.initiator) {
-            appRtcClient.sendOfferSdp(sdp);
-          } else {
-            appRtcClient.sendAnswerSdp(sdp);
-          }
+    runOnUiThread(() -> {
+      if (appRtcClient != null) {
+        logAndToast("Sending " + sdp.type + ", delay=" + delta + "ms");
+        if (signalingParameters.initiator) {
+          appRtcClient.sendOfferSdp(sdp);
+        } else {
+          appRtcClient.sendAnswerSdp(sdp);
         }
-        if (peerConnectionParameters.videoMaxBitrate > 0) {
-          Log.d(TAG, "Set video maximum bitrate: " + peerConnectionParameters.videoMaxBitrate);
-          peerConnectionClient.setVideoMaxBitrate(peerConnectionParameters.videoMaxBitrate);
-        }
+      }
+      if (peerConnectionParameters.videoMaxBitrate > 0) {
+        Log.d(TAG, "Set video maximum bitrate: " + peerConnectionParameters.videoMaxBitrate);
+        peerConnectionClient.setVideoMaxBitrate(peerConnectionParameters.videoMaxBitrate);
       }
     });
   }
 
   @Override
   public void onIceCandidate(final IceCandidate candidate) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (appRtcClient != null) {
-          appRtcClient.sendLocalIceCandidate(candidate);
-        }
+    runOnUiThread(() -> {
+      if (appRtcClient != null) {
+        appRtcClient.sendLocalIceCandidate(candidate);
       }
     });
   }
 
   @Override
   public void onIceCandidatesRemoved(final IceCandidate[] candidates) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (appRtcClient != null) {
-          appRtcClient.sendLocalIceCandidateRemovals(candidates);
-        }
+    runOnUiThread(() -> {
+      if (appRtcClient != null) {
+        appRtcClient.sendLocalIceCandidateRemovals(candidates);
       }
     });
   }
@@ -916,46 +877,30 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
   @Override
   public void onIceConnected() {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        logAndToast("ICE connected, delay=" + delta + "ms");
-      }
-    });
+    runOnUiThread(() -> logAndToast("ICE connected, delay=" + delta + "ms"));
   }
 
   @Override
   public void onIceDisconnected() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        logAndToast("ICE disconnected");
-      }
-    });
+    runOnUiThread(() -> logAndToast("ICE disconnected"));
   }
 
   @Override
   public void onConnected() {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        logAndToast("DTLS connected, delay=" + delta + "ms");
-        connected = true;
-        callConnected();
-      }
+    runOnUiThread(() -> {
+      logAndToast("DTLS connected, delay=" + delta + "ms");
+      connected = true;
+      callConnected();
     });
   }
 
   @Override
   public void onDisconnected() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        logAndToast("DTLS disconnected");
-        connected = false;
-        disconnect();
-      }
+    runOnUiThread(() -> {
+      logAndToast("DTLS disconnected");
+      connected = false;
+      disconnect();
     });
   }
 
@@ -964,12 +909,9 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
   @Override
   public void onPeerConnectionStatsReady(final StatsReport[] reports) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (!isError && connected) {
-          hudFragment.updateEncoderStatistics(reports);
-        }
+    runOnUiThread(() -> {
+       if (!isError && connected) {
+        hudFragment.updateEncoderStatistics(reports);
       }
     });
   }

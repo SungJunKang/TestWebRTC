@@ -83,27 +83,20 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
 
   // --------------------------------------------------------------------
   // AppRTCClient interface implementation.
-  // Asynchronously connect to an AppRTC room URL using supplied connection
-  // parameters, retrieves room parameters and connect to WebSocket server.
+  // Asynchronously connect to an AppRTC room URL using supplied connection parameters, retrieves room parameters and connect to WebSocket server.
+  // AppRTCClient 인터페이스를 구현합니다.
+   // 제공된 연결 매개 변수를 사용하여 AppRTC 룸 URL에 비동기식으로 연결하고 룸 매개 변수를 검색한 후 WebSocket 서버에 연결합니다.
   @Override
   public void connectToRoom(RoomConnectionParameters connectionParameters) {
     this.connectionParameters = connectionParameters;
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        connectToRoomInternal();
-      }
-    });
+    handler.post(() -> connectToRoomInternal());
   }
 
   @Override
   public void disconnectFromRoom() {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        disconnectFromRoomInternal();
-        handler.getLooper().quit();
-      }
+    handler.post(() -> {
+      disconnectFromRoomInternal();
+      handler.getLooper().quit();
     });
   }
 
@@ -117,12 +110,7 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
     RoomParametersFetcherEvents callbacks = new RoomParametersFetcherEvents() {
       @Override
       public void onSignalingParametersReady(final SignalingParameters params) {
-        WebSocketRTCClient.this.handler.post(new Runnable() {
-          @Override
-          public void run() {
-            WebSocketRTCClient.this.signalingParametersReady(params);
-          }
-        });
+        WebSocketRTCClient.this.handler.post(() -> WebSocketRTCClient.this.signalingParametersReady(params));
       }
 
       @Override
@@ -148,6 +136,7 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
   }
 
   // Helper functions to get connection, post message and leave message URLs
+  // 연결을 얻고 메시지를 게시하고 메시지 URL을 남기는 도우미 기능입니다.
   private String getConnectionUrl(RoomConnectionParameters connectionParameters) {
     return connectionParameters.roomUrl + "/" + ROOM_JOIN + "/" + connectionParameters.roomId
         + getQueryString(connectionParameters);
@@ -173,8 +162,8 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
     }
   }
 
-  // Callback issued when room parameters are extracted. Runs on local
-  // looper thread.
+  // Callback issued when room parameters are extracted. Runs on local looper thread.
+  // 룸 매개변수를 추출할 때 콜백이 발급됩니다. 로컬 루퍼 스레드에서 실행됩니다.
   private void signalingParametersReady(final SignalingParameters signalingParameters) {
     Log.d(TAG, "Room connection completed.");
     if (connectionParameters.loopback
@@ -194,80 +183,75 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
     roomState = ConnectionState.CONNECTED;
 
     // Fire connection and signaling parameters events.
+    // 연결 및 신호 파라미터 이벤트를 실행합니다.
     events.onConnectedToRoom(signalingParameters);
 
     // Connect and register WebSocket client.
+    // WebSocket 클라이언트를 연결하고 등록합니다.
     wsClient.connect(signalingParameters.wssUrl, signalingParameters.wssPostUrl);
     wsClient.register(connectionParameters.roomId, signalingParameters.clientId);
   }
 
   // Send local offer SDP to the other participant.
+  // 다른 참가자에게 로컬 오퍼링 SDP를 보냅니다.
   @Override
   public void sendOfferSdp(final SessionDescription sdp) {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        if (roomState != ConnectionState.CONNECTED) {
-          reportError("Sending offer SDP in non connected state.");
-          return;
-        }
-        JSONObject json = new JSONObject();
-        jsonPut(json, "sdp", sdp.description);
-        jsonPut(json, "type", "offer");
-        sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
-        if (connectionParameters.loopback) {
-          // In loopback mode rename this offer to answer and route it back.
-          SessionDescription sdpAnswer = new SessionDescription(
-              SessionDescription.Type.fromCanonicalForm("answer"), sdp.description);
-          events.onRemoteDescription(sdpAnswer);
-        }
+    handler.post(() -> {
+      if (roomState != ConnectionState.CONNECTED) {
+        reportError("Sending offer SDP in non connected state.");
+        return;
+      }
+      JSONObject json = new JSONObject();
+      jsonPut(json, "sdp", sdp.description);
+      jsonPut(json, "type", "offer");
+      sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
+      if (connectionParameters.loopback) {
+        // In loopback mode rename this offer to answer and route it back.
+        SessionDescription sdpAnswer = new SessionDescription(
+            SessionDescription.Type.fromCanonicalForm("answer"), sdp.description);
+        events.onRemoteDescription(sdpAnswer);
       }
     });
   }
 
   // Send local answer SDP to the other participant.
+  // 다른 참가자에게 로컬 응답 SDP를 보냅니다.
   @Override
   public void sendAnswerSdp(final SessionDescription sdp) {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        if (connectionParameters.loopback) {
-          Log.e(TAG, "Sending answer in loopback mode.");
-          return;
-        }
-        JSONObject json = new JSONObject();
-        jsonPut(json, "sdp", sdp.description);
-        jsonPut(json, "type", "answer");
-        wsClient.send(json.toString());
+    handler.post(() -> {
+      if (connectionParameters.loopback) {
+        Log.e(TAG, "Sending answer in loopback mode.");
+        return;
       }
+      JSONObject json = new JSONObject();
+      jsonPut(json, "sdp", sdp.description);
+      jsonPut(json, "type", "answer");
+      wsClient.send(json.toString());
     });
   }
 
   // Send Ice candidate to the other participant.
   @Override
   public void sendLocalIceCandidate(final IceCandidate candidate) {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        JSONObject json = new JSONObject();
-        jsonPut(json, "type", "candidate");
-        jsonPut(json, "label", candidate.sdpMLineIndex);
-        jsonPut(json, "id", candidate.sdpMid);
-        jsonPut(json, "candidate", candidate.sdp);
-        if (initiator) {
-          // Call initiator sends ice candidates to GAE server.
-          if (roomState != ConnectionState.CONNECTED) {
-            reportError("Sending ICE candidate in non connected state.");
-            return;
-          }
-          sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
-          if (connectionParameters.loopback) {
-            events.onRemoteIceCandidate(candidate);
-          }
-        } else {
-          // Call receiver sends ice candidates to websocket server.
-          wsClient.send(json.toString());
+    handler.post(() -> {
+      JSONObject json = new JSONObject();
+      jsonPut(json, "type", "candidate");
+      jsonPut(json, "label", candidate.sdpMLineIndex);
+      jsonPut(json, "id", candidate.sdpMid);
+      jsonPut(json, "candidate", candidate.sdp);
+      if (initiator) {
+        // Call initiator sends ice candidates to GAE server.
+        if (roomState != ConnectionState.CONNECTED) {
+          reportError("Sending ICE candidate in non connected state.");
+          return;
         }
+        sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
+        if (connectionParameters.loopback) {
+          events.onRemoteIceCandidate(candidate);
+        }
+      } else {
+        // Call receiver sends ice candidates to websocket server.
+        wsClient.send(json.toString());
       }
     });
   }
@@ -275,38 +259,36 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
   // Send removed Ice candidates to the other participant.
   @Override
   public void sendLocalIceCandidateRemovals(final IceCandidate[] candidates) {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        JSONObject json = new JSONObject();
-        jsonPut(json, "type", "remove-candidates");
-        JSONArray jsonArray = new JSONArray();
-        for (final IceCandidate candidate : candidates) {
-          jsonArray.put(toJsonCandidate(candidate));
+    handler.post(() -> {
+      JSONObject json = new JSONObject();
+      jsonPut(json, "type", "remove-candidates");
+      JSONArray jsonArray = new JSONArray();
+      for (final IceCandidate candidate : candidates) {
+        jsonArray.put(toJsonCandidate(candidate));
+      }
+      jsonPut(json, "candidates", jsonArray);
+      if (initiator) {
+        // Call initiator sends ice candidates to GAE server.
+        if (roomState != ConnectionState.CONNECTED) {
+          reportError("Sending ICE candidate removals in non connected state.");
+          return;
         }
-        jsonPut(json, "candidates", jsonArray);
-        if (initiator) {
-          // Call initiator sends ice candidates to GAE server.
-          if (roomState != ConnectionState.CONNECTED) {
-            reportError("Sending ICE candidate removals in non connected state.");
-            return;
-          }
-          sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
-          if (connectionParameters.loopback) {
-            events.onRemoteIceCandidatesRemoved(candidates);
-          }
-        } else {
-          // Call receiver sends ice candidates to websocket server.
-          wsClient.send(json.toString());
+        sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString());
+        if (connectionParameters.loopback) {
+          events.onRemoteIceCandidatesRemoved(candidates);
         }
+      } else {
+        // Call receiver sends ice candidates to websocket server.
+        wsClient.send(json.toString());
       }
     });
   }
 
   // --------------------------------------------------------------------
   // WebSocketChannelEvents interface implementation.
-  // All events are called by WebSocketChannelClient on a local looper thread
-  // (passed to WebSocket client constructor).
+  // All events are called by WebSocketChannelClient on a local looper thread (passed to WebSocket client constructor).
+  // WebSocketChannelEvents 인터페이스 구현입니다.
+  // 모든 이벤트는 WebSocketChannelClient 가 로컬 루퍼 스레드를 통해 호출합니다(WebSocket 클라이언트 생성자에게 전달됨).
   @Override
   public void onWebSocketMessage(final String msg) {
     if (wsClient.getState() != WebSocketConnectionState.REGISTERED) {
@@ -376,13 +358,10 @@ public class WebSocketRTCClient implements AppRTCClient, WebSocketChannelEvents 
   // Helper functions.
   private void reportError(final String errorMessage) {
     Log.e(TAG, errorMessage);
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        if (roomState != ConnectionState.ERROR) {
-          roomState = ConnectionState.ERROR;
-          events.onChannelError(errorMessage);
-        }
+    handler.post(() -> {
+      if (roomState != ConnectionState.ERROR) {
+        roomState = ConnectionState.ERROR;
+        events.onChannelError(errorMessage);
       }
     });
   }

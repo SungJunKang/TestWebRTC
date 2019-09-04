@@ -54,8 +54,8 @@ public class RecordedAudioToFileController implements SamplesReadyCallback {
   }
 
   /**
-   * Should be called on the same executor thread as the one provided at
-   * construction.
+   * Should be called on the same executor thread as the one provided at construction.
+   * 시공 시 제공된 것과 동일한 실행자 나사산에 대해 호출해야 합니다.
    */
   public boolean start() {
     Log.d(TAG, "start");
@@ -70,8 +70,8 @@ public class RecordedAudioToFileController implements SamplesReadyCallback {
   }
 
   /**
-   * Should be called on the same executor thread as the one provided at
-   * construction.
+   * Should be called on the same executor thread as the one provided at construction.
+   * 시공 시 제공된 것과 동일한 실행자 나사산에 대해 호출해야 합니다.
    */
   public void stop() {
     Log.d(TAG, "stop");
@@ -98,8 +98,8 @@ public class RecordedAudioToFileController implements SamplesReadyCallback {
     return false;
   }
 
-  // Utilizes audio parameters to create a file name which contains sufficient
-  // information so that the file can be played using an external file player.
+  // Utilizes audio parameters to create a file name which contains sufficient information so that the file can be played using an external file player.
+  // 오디오 매개 변수를 사용하여 외부 파일 플레이어를 사용하여 파일을 재생할 수 있도록 충분한 정보가 포함된 파일 이름을 생성합니다.
   // Example: /sdcard/recorded_audio_16bits_48000Hz_mono.pcm.
   private void openRawAudioOutputFile(int sampleRate, int channelCount) {
     final String fileName = Environment.getExternalStorageDirectory().getPath() + File.separator
@@ -127,19 +127,20 @@ public class RecordedAudioToFileController implements SamplesReadyCallback {
       if (!isRunning) {
         return;
       }
-      // Open a new file for the first callback only since it allows us to add audio parameters to
-      // the file name.
+      // Open a new file for the first callback only since it allows us to add audio parameters to the file name.
+      // 파일 이름에 오디오 매개 변수를 추가할 수 있으므로 첫 번째 콜백에 대해서만 새 파일을 엽니다.
       if (rawAudioFileOutputStream == null) {
         openRawAudioOutputFile(samples.getSampleRate(), samples.getChannelCount());
         fileSizeInBytes = 0;
       }
     }
     // Append the recorded 16-bit audio samples to the open output file.
+    // 기록된 16비트 오디오 샘플을 열린 출력 파일에 추가합니다.
     executor.execute(() -> {
       if (rawAudioFileOutputStream != null) {
         try {
-          // Set a limit on max file size. 58348800 bytes corresponds to
-          // approximately 10 minutes of recording in mono at 48kHz.
+          // Set a limit on max file size. 58348800 bytes corresponds to approximately 10 minutes of recording in mono at 48kHz.
+          // 최대 파일 크기에 대한 제한을 설정합니다. 58348800바이트는 48kHz에서 모노 단위로 약 10분 분량의 레코딩에 해당합니다.
           if (fileSizeInBytes < MAX_FILE_SIZE_IN_BYTES) {
             // Writes samples.getData().length bytes to output stream.
             rawAudioFileOutputStream.write(samples.getData());
